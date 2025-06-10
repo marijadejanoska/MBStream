@@ -1,0 +1,6 @@
+@MBStream_HostAddress = http://localhost:5148
+
+GET {{MBStream_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

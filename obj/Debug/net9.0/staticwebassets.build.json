@@ -1,0 +1,362 @@
+{
+  "Version": 1,
+  "Hash": "kYxo1l+II3ozpI9KycU3qQZ/Zi5RiVdUgQNaozN4+Do=",
+  "Source": "MBStream",
+  "BasePath": "_content/MBStream",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "MBStream\\wwwroot",
+      "Source": "MBStream",
+      "ContentRoot": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\",
+      "BasePath": "_content/MBStream",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [
+    {
+      "Identity": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\obj\\Debug\\net9.0\\compressed\\zq00pod96x-4coyda16k8.gz",
+      "SourceId": "MBStream",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/MBStream",
+      "RelativePath": "index#[.{fingerprint=4coyda16k8}]?.html.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\index.html",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "wkj7u46hlt",
+      "Integrity": "4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\index.html"
+    },
+    {
+      "Identity": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\index.html",
+      "SourceId": "MBStream",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\",
+      "BasePath": "_content/MBStream",
+      "RelativePath": "index#[.{fingerprint}]?.html",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "4coyda16k8",
+      "Integrity": "TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\index.html"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "index.4coyda16k8.html",
+      "AssetFile": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\obj\\Debug\\net9.0\\compressed\\zq00pod96x-4coyda16k8.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000283366393"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3528"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 08 Jun 2025 23:26:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4coyda16k8"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU="
+        }
+      ]
+    },
+    {
+      "Route": "index.4coyda16k8.html",
+      "AssetFile": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "25901"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 08 Jun 2025 23:26:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4coyda16k8"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU="
+        }
+      ]
+    },
+    {
+      "Route": "index.4coyda16k8.html.gz",
+      "AssetFile": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\obj\\Debug\\net9.0\\compressed\\zq00pod96x-4coyda16k8.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3528"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 08 Jun 2025 23:26:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "4coyda16k8"
+        },
+        {
+          "Name": "label",
+          "Value": "index.html.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\obj\\Debug\\net9.0\\compressed\\zq00pod96x-4coyda16k8.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000283366393"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3528"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 08 Jun 2025 23:26:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU="
+        }
+      ]
+    },
+    {
+      "Route": "index.html",
+      "AssetFile": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\wwwroot\\index.html",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "25901"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 08 Jun 2025 23:26:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-TCt3ytpKYLmsKO3wYLQj/5op8PCISYiBIv/vBYAhqyU="
+        }
+      ]
+    },
+    {
+      "Route": "index.html.gz",
+      "AssetFile": "C:\\Users\\elena\\Desktop\\MBStream\\MBStream\\MBStream\\obj\\Debug\\net9.0\\compressed\\zq00pod96x-4coyda16k8.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3528"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/html"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Sun, 08 Jun 2025 23:26:30 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-4GzW3haNZbheht4XOCy84CXA/pWVtTVtwwoeIPIODms="
+        }
+      ]
+    }
+  ]
+}

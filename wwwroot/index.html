@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Music API </title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 2em;
+        }
+
+        section {
+            border: 1px solid #ccc;
+            padding: 1em;
+            margin-bottom: 2em;
+            border-radius: 8px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 1em;
+        }
+
+        input, button, select {
+            margin-top: 0.5em;
+        }
+
+        pre {
+            background: #f8f8f8;
+            padding: 1em;
+            overflow-x: auto;
+        }
+
+        .list {
+            margin-top: 1em;
+        }
+
+        .response {
+            color: #006400;
+            margin-top: 1em;
+        }
+
+        .error {
+            color: #b22222;
+            margin-top: 1em;
+        }
+
+        .admin-btn {
+            margin-left: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Music Streaming</h1>
+
+    <!-- Authentication -->
+    <section id="auth">
+        <h2>Login</h2>
+        <form id="login-form">
+            <label>Email: <input type="email" id="login-email" required /></label>
+            <label>Password: <input type="password" id="login-password" required /></label>
+            <button type="submit">Login</button>
+        </form>
+        <div id="auth-status"></div>
+    </section>
+
+    <!-- Artists -->
+    <section id="artists">
+        <h2>Artists</h2>
+        <form id="create-artist-form">
+            <label>Artist Name: <input type="text" id="artist-name" required /></label>
+            <button type="submit">Create Artist</button>
+        </form>
+        <button onclick="listArtists()">List Artists</button>
+        <div class="list" id="artist-list"></div>
+    </section>
+
+    <!-- Albums -->
+    <section id="albums">
+        <h2>Albums</h2>
+        <form id="create-album-form">
+            <label>Album Title: <input type="text" id="album-title" required /></label>
+            <label>Release Date: <input type="date" id="album-release" /></label>
+            <label>Artist IDs (comma separated): <input type="text" id="album-artist-ids" /></label>
+            <button type="submit">Create Album</button>
+        </form>
+        <button onclick="listAlbums()">List Albums</button>
+        <div class="list" id="album-list"></div>
+    </section>
+
+    <!-- Songs -->
+    <section id="songs">
+        <h2>Songs</h2>
+        <form id="create-song-form">
+            <label>Song Title: <input type="text" id="song-title" required /></label>
+            <label>Release Date: <input type="date" id="song-release" /></label>
+            <label>Duration (seconds): <input type="number" id="song-duration" required /></label>
+            <label>Album ID (optional): <input type="number" id="song-album-id" /></label>
+            <label>Artist IDs (comma separated): <input type="text" id="song-artist-ids" /></label>
+            <button type="submit">Create Song</button>
+        </form>
+        <button onclick="listSongs()">List Songs</button>
+        <div class="list" id="song-list"></div>
+    </section>
+
+    <!-- Playlists -->
+    <section id="playlists">
+        <h2>Playlists</h2>
+        <form id="create-playlist-form">
+            <label>Playlist Title: <input type="text" id="playlist-title" required /></label>
+            <label>User ID: <input type="number" id="playlist-user-id" required /></label>
+            <label>Song IDs (comma separated): <input type="text" id="playlist-song-ids" /></label>
+            <button type="submit">Create Playlist</button>
+        </form>
+        <button onclick="listPlaylists()">List Playlists</button>
+        <div class="list" id="playlist-list"></div>
+    </section>
+
+    <!-- Users -->
+    <section id="users">
+        <h2>Users</h2>
+        <form id="create-user-form">
+            <label>User Name: <input type="text" id="user-name" required /></label>
+            <label>User Email: <input type="email" id="user-email" required /></label>
+            <label>Password: <input type="password" id="user-password" required /></label>
+            <button type="submit">Create User</button>
+        </form>
+        <button onclick="listUsers()">List Users</button>
+        <div class="list" id="user-list"></div>
+    </section>
+
+    <pre id="response"></pre>
+    <pre id="error" class="error"></pre>
+
+    <script>
+        const apiBase = '';
+        let jwtToken = '';
+
+        // JWT decode helpers
+        function getJwtPayload(token) {
+            if (!token) return null;
+            const payload = token.split('.')[1];
+            return JSON.parse(atob(payload));
+        }
+        function isAdmin() {
+            const payload = getJwtPayload(jwtToken);
+            // Adjust the claim key if your JWT uses a different one
+            return payload && (
+                payload["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] === "Admin" ||
+                payload["role"] === "Admin"
+            );
+        }
+
+        // Helper to handle fetch responses
+        async function handleResponse(res) {
+            if (res.status === 401) {
+                document.getElementById('error').innerText = "Unauthorized: Please log in.";
+                throw new Error("Unauthorized");
+            }
+            const contentType = res.headers.get("content-type");
+            if (res.ok && contentType && contentType.includes("application/json")) {
+                return await res.json();
+            } else if (res.ok) {
+                return null;
+            } else {
+                const text = await res.text();
+                throw new Error(`Error ${res.status}: ${text}`);
+            }
+        }
+        function getHeaders() {
+            const headers = { 'Content-Type': 'application/json' };
+            if (jwtToken) headers['Authorization'] = 'Bearer ' + jwtToken;
+            return headers;
+        }
+
+        // AUTH LOGIN
+        document.getElementById('login-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            try {
+                const res = await fetch(`${apiBase}/api/Auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ userEmail: email, password })
+                });
+                const data = await res.json();
+                if (data.token) {
+                    jwtToken = data.token;
+                    document.getElementById('auth-status').innerText = "Logged in!";
+                    document.getElementById('error').innerText = '';
+                    // Reload lists to show admin controls
+                    listArtists(); listAlbums(); listSongs(); listPlaylists(); listUsers();
+                } else {
+                    document.getElementById('auth-status').innerText = "Login failed!";
+                }
+            } catch (err) {
+                document.getElementById('auth-status').innerText = "Login error!";
+                document.getElementById('error').innerText = err.message;
+            }
+        };
+
+        // ARTISTS CRUD
+        async function listArtists() {
+            try {
+                const res = await fetch(`${apiBase}/api/Artists`, { headers: getHeaders() });
+                const artists = await res.json();
+                renderArtists(artists);
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        function renderArtists(artists) {
+            document.getElementById('artist-list').innerHTML = artists.map(a => {
+                let controls = '';
+                if (isAdmin()) {
+                    controls = `
+                            <button class="admin-btn" onclick="editArtist(${a.artistId}, '${a.artistName}')">Edit</button>
+                            <button class="admin-btn" onclick="deleteArtist(${a.artistId})">Delete</button>
+                        `;
+                }
+                return `<div><b>${a.artistName}</b> ${controls}</div>`;
+            }).join('');
+        }
+        document.getElementById('create-artist-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('artist-name').value;
+            try {
+                const res = await fetch(`${apiBase}/api/Artists`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ artistName: name })
+                });
+                document.getElementById('response').innerText = JSON.stringify(await handleResponse(res), null, 2);
+                listArtists();
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        };
+        async function editArtist(id, name) {
+            const newName = prompt("Edit artist name:", name);
+            if (!newName) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Artists/${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ artistName: newName })
+                });
+                if (res.ok) {
+                    listArtists();
+                    document.getElementById('response').innerText = "Artist updated.";
+                } else {
+                    document.getElementById('error').innerText = "Update failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        async function deleteArtist(id) {
+            if (!confirm("Delete this artist?")) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Artists/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                if (res.ok) {
+                    listArtists();
+                    document.getElementById('response').innerText = "Artist deleted.";
+                } else {
+                    document.getElementById('error').innerText = "Delete failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+
+        // ALBUMS CRUD
+        async function listAlbums() {
+            try {
+                const res = await fetch(`${apiBase}/api/Albums`, { headers: getHeaders() });
+                const albums = await res.json();
+                renderAlbums(albums);
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        function renderAlbums(albums) {
+            document.getElementById('album-list').innerHTML = albums.map(a => {
+                let controls = '';
+                if (isAdmin()) {
+                    controls = `
+                <button class="admin-btn" onclick="editAlbum(${a.albumId}, '${a.albumTitle}')">Edit</button>
+                <button class="admin-btn" onclick="deleteAlbum(${a.albumId})">Delete</button>
+            `;
+                }
+
+                let songList = '';
+                if (a.songs && a.songs.length > 0) {
+                    songList = '<ul>' + a.songs.map(s => `<li>${s.songTitle}</li>`).join('') + '</ul>';
+                }
+
+                return `<div>
+            <b>${a.albumTitle}</b> (${a.releaseDate ? a.releaseDate.split('T')[0] : 'N/A'}) ${controls}
+            ${songList}
+        </div>`;
+            }).join('');
+        }
+
+
+        document.getElementById('create-album-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('album-title').value;
+            const release = document.getElementById('album-release').value;
+            const utcRelease = release ? `${release}T00:00:00` : null;
+            const artistIds = document.getElementById('album-artist-ids').value
+                .split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+            try {
+                const res = await fetch(`${apiBase}/api/Albums`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ albumTitle: title, releaseDate: utcRelease, artistIds })
+                });
+                document.getElementById('response').innerText = JSON.stringify(await handleResponse(res), null, 2);
+                listAlbums();
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        };
+        async function editAlbum(id, title) {
+            const newTitle = prompt("Edit album title:", title);
+            if (!newTitle) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Albums/${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ albumTitle: newTitle })
+                });
+                if (res.ok) {
+                    listAlbums();
+                    document.getElementById('response').innerText = "Album updated.";
+                } else {
+                    document.getElementById('error').innerText = "Update failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        async function deleteAlbum(id) {
+            if (!confirm("Delete this album?")) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Albums/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                if (res.ok) {
+                    listAlbums();
+                    document.getElementById('response').innerText = "Album deleted.";
+                } else {
+                    document.getElementById('error').innerText = "Delete failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+
+        // SONGS CRUD
+        async function listSongs() {
+            try {
+                const res = await fetch(`${apiBase}/api/Songs`, { headers: getHeaders() });
+                const songs = await res.json();
+                renderSongs(songs);
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        function renderSongs(songs) {
+            document.getElementById('song-list').innerHTML = songs.map(s => {
+                let controls = '';
+                if (isAdmin()) {
+                    controls = `
+                            <button class="admin-btn" onclick="editSong(${s.songId}, '${s.songTitle}')">Edit</button>
+                            <button class="admin-btn" onclick="deleteSong(${s.songId})">Delete</button>
+                        `;
+                }
+                return `<div><b>${s.songTitle}</b> (${s.releaseDate ? s.releaseDate.split('T')[0] : 'N/A'}) ${controls}</div>`;
+            }).join('');
+        }
+        document.getElementById('create-song-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('song-title').value;
+            const release = document.getElementById('song-release').value;
+            const utcRelease = release ? `${release}T00:00:00Z` : null;
+            const duration = parseInt(document.getElementById('song-duration').value);
+            const albumIdRaw = document.getElementById('song-album-id').value;
+            const albumId = albumIdRaw === "" ? null : parseInt(albumIdRaw);
+            const artistIds = document.getElementById('song-artist-ids').value
+                .split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+            try {
+                const res = await fetch(`${apiBase}/api/Songs`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ songTitle: title, releaseDate: utcRelease, durationSeconds: duration, albumId, artistIds })
+                });
+                document.getElementById('response').innerText = JSON.stringify(await handleResponse(res), null, 2);
+                listSongs();
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        };
+        async function editSong(id, title) {
+            const newTitle = prompt("Edit song title:", title);
+            if (!newTitle) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Songs/${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ songTitle: newTitle })
+                });
+                if (res.ok) {
+                    listSongs();
+                    document.getElementById('response').innerText = "Song updated.";
+                } else {
+                    document.getElementById('error').innerText = "Update failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        async function deleteSong(id) {
+            if (!confirm("Delete this song?")) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Songs/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                if (res.ok) {
+                    listSongs();
+                    document.getElementById('response').innerText = "Song deleted.";
+                } else {
+                    document.getElementById('error').innerText = "Delete failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+
+        // PLAYLISTS CRUD
+        async function listPlaylists() {
+            try {
+                const res = await fetch(`${apiBase}/api/Playlists`, { headers: getHeaders() });
+                const playlists = await res.json();
+                renderPlaylists(playlists);
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        function renderPlaylists(playlists) {
+            document.getElementById('playlist-list').innerHTML = playlists.map(p => {
+                let controls = '';
+                if (isAdmin()) {
+                    controls = `
+                            <button class="admin-btn" onclick="editPlaylist(${p.playlistId}, '${p.playlistTitle}')">Edit</button>
+                            <button class="admin-btn" onclick="deletePlaylist(${p.playlistId})">Delete</button>
+                        `;
+                }
+                return `<div><b>${p.playlistTitle}</b> ${controls}</div>`;
+            }).join('');
+        }
+        document.getElementById('create-playlist-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const title = document.getElementById('playlist-title').value;
+            const userId = parseInt(document.getElementById('playlist-user-id').value);
+            const songIds = document.getElementById('playlist-song-ids').value
+                .split(',').map(x => parseInt(x.trim())).filter(x => !isNaN(x));
+            try {
+                const res = await fetch(`${apiBase}/api/Playlists`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ playlistTitle: title, userId, songIds })
+                });
+                document.getElementById('response').innerText = JSON.stringify(await handleResponse(res), null, 2);
+                listPlaylists();
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        };
+        async function editPlaylist(id, title) {
+            const newTitle = prompt("Edit playlist title:", title);
+            if (!newTitle) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Playlists/${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ playlistTitle: newTitle })
+                });
+                if (res.ok) {
+                    listPlaylists();
+                    document.getElementById('response').innerText = "Playlist updated.";
+                } else {
+                    document.getElementById('error').innerText = "Update failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        async function deletePlaylist(id) {
+            if (!confirm("Delete this playlist?")) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Playlists/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                if (res.ok) {
+                    listPlaylists();
+                    document.getElementById('response').innerText = "Playlist deleted.";
+                } else {
+                    document.getElementById('error').innerText = "Delete failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+
+        // USERS CRUD
+        async function listUsers() {
+            try {
+                const res = await fetch(`${apiBase}/api/Users`, { headers: getHeaders() });
+                const users = await res.json();
+                renderUsers(users);
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        function renderUsers(users) {
+            document.getElementById('user-list').innerHTML = users.map(u => {
+                let controls = '';
+                if (isAdmin()) {
+                    controls = `
+                            <button class="admin-btn" onclick="editUser(${u.userId}, '${u.userName}', '${u.userEmail}')">Edit</button>
+                            <button class="admin-btn" onclick="deleteUser(${u.userId})">Delete</button>
+                        `;
+                }
+                return `<div><b>${u.userName}</b> (${u.userEmail}) ${controls}</div>`;
+            }).join('');
+        }
+        document.getElementById('create-user-form').onsubmit = async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('user-email').value;
+            const password = document.getElementById('user-password').value;
+            try {
+                const res = await fetch(`${apiBase}/api/Users`, {
+                    method: 'POST',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ userName: name, userEmail: email, password })
+                });
+                document.getElementById('response').innerText = JSON.stringify(await handleResponse(res), null, 2);
+                listUsers();
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        };
+        async function editUser(id, name, email) {
+            const newName = prompt("Edit user name:", name);
+            const newEmail = prompt("Edit user email:", email);
+            if (!newName || !newEmail) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Users/${id}`, {
+                    method: 'PUT',
+                    headers: getHeaders(),
+                    body: JSON.stringify({ userName: newName, userEmail: newEmail })
+                });
+                if (res.ok) {
+                    listUsers();
+                    document.getElementById('response').innerText = "User updated.";
+                } else {
+                    document.getElementById('error').innerText = "Update failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+        async function deleteUser(id) {
+            if (!confirm("Delete this user?")) return;
+            try {
+                const res = await fetch(`${apiBase}/api/Users/${id}`, {
+                    method: 'DELETE',
+                    headers: getHeaders()
+                });
+                if (res.ok) {
+                    listUsers();
+                    document.getElementById('response').innerText = "User deleted.";
+                } else {
+                    document.getElementById('error').innerText = "Delete failed.";
+                }
+            } catch (err) {
+                document.getElementById('error').innerText = err.message;
+            }
+        }
+
+        // Initial loads
+        listArtists();
+        listAlbums();
+        listSongs();
+        listPlaylists();
+        listUsers();
+    </script>
+</body>
+</html>
