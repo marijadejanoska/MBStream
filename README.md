@@ -1,4 +1,3 @@
-text
 # MBStream
 
 A modern ASP.NET Core web API for music streaming, featuring full CRUD operations, JWT authentication, and a clean separation of concerns.  
@@ -33,22 +32,18 @@ Easily manage users, artists, albums, songs, and playlists with robust role-base
 git clone https://github.com/marijadejanoska/MBStream.git
 cd MBStream/MBStream/MBStream
 
-text
 
 2. **Restore dependencies**
 dotnet restore
 
-text
 
 3. **Apply database migrations**
 dotnet ef database update
 
-text
 
 4. **Run the application**
 dotnet run
 
-text
 
 5. **Access the API**
 - Default: [http://localhost:5000](http://localhost:5000)
@@ -77,7 +72,6 @@ To run all tests:
 
 dotnet test
 
-text
 
 ---
 
@@ -95,7 +89,7 @@ MBStream.csproj
 Program.cs
 appsettings.json
 
-text
+
 
 ---
 
