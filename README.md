@@ -51,9 +51,8 @@ dotnet run
 
 8. **Access the API**
    
-- Default: [http://localhost:5000](http://localhost:5000)
-- Swagger UI: [http://localhost:5000/swagger](http://localhost:5000/swagger)
-- Frontend: [http://localhost:5000/index.html](http://localhost:5000/index.html)
+- Default: [http://localhost:7216](http://localhost:7216)
+- Swagger UI: [http://localhost:7216/swagger](http://localhost:7216/swagger)
 
 ---
 
