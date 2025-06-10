@@ -29,23 +29,28 @@ Easily manage users, artists, albums, songs, and playlists with robust role-base
 ### Setup
 
 1. **Clone the repository**
+   
 git clone https://github.com/marijadejanoska/MBStream.git
 cd MBStream/MBStream/MBStream
 
 
-2. **Restore dependencies**
+3. **Restore dependencies**
+   
 dotnet restore
 
 
-3. **Apply database migrations**
+4. **Apply database migrations**
+   
 dotnet ef database update
 
 
-4. **Run the application**
+6. **Run the application**
+   
 dotnet run
 
 
-5. **Access the API**
+8. **Access the API**
+   
 - Default: [http://localhost:5000](http://localhost:5000)
 - Swagger UI: [http://localhost:5000/swagger](http://localhost:5000/swagger)
 - Frontend: [http://localhost:5000/index.html](http://localhost:5000/index.html)
@@ -68,7 +73,7 @@ dotnet run
 
 ## Testing
 
-Unit tests are located in `MBStream.Tests`.  
+Unit tests are located in `MBStream.TestProject1`.  
 To run all tests:
 
 dotnet test
@@ -82,6 +87,7 @@ MBStream/
 Controllers/
 Data/
 DTOs/
+Mapping/
 Models/
 Repositories/
 Services/
